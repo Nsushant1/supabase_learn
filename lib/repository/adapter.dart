@@ -5,12 +5,22 @@ abstract class Adapter {
   Future createAccount(String email, BuildContext context);
 
   /// Update profile of an existing user
-  Future updateUserProfile(String name, String phoneNumber, String carModel,
-      String carNumber, String carColor, BuildContext context);
+  Future updateUserProfile(
+    String name,
+    String phoneNumber,
+    String carModel,
+    String carNumber,
+    String carColor,
+    BuildContext context,
+  );
 
-  /// Add new Car profile for an existing user
+  //Add new Car profile for an existing user
   Future addCarProfile(
-      String carModel, String carNumber, String carColor, BuildContext context);
+    String carModel,
+    String carNumber,
+    String carColor,
+    BuildContext context,
+  );
 
   /// Sign in an existing user
   Future signInUser(String email, BuildContext context);
@@ -26,14 +36,15 @@ abstract class Adapter {
 
   /// Book Parking: Save details of the parking the user has selected.
   Future saveParkingDetail(
-      BuildContext context,
-      String parkingDate,
-      String entryTime,
-      int durationInHours,
-      String exitTime,
-      Map<String, dynamic> parkingarea,
-      int vehicleId,
-      int parkingSlotId);
+    BuildContext context,
+    String parkingDate,
+    String entryTime,
+    int durationInHours,
+    String exitTime,
+    Map<String, dynamic> parkingarea,
+    int vehicleId,
+    int parkingSlotId,
+  );
 
   /// Get all bookings made by an existing user
   Future getAllBookings(BuildContext context);
@@ -58,7 +69,10 @@ abstract class Adapter {
 
   /// Get available slots for a specific parking floor
   Future getSlotsbyParkingFloor(
-      BuildContext context, int parkingFloorId, int parkingAreaId);
+    BuildContext context,
+    int parkingFloorId,
+    int parkingAreaId,
+  );
 
   /// Update availability of a specific parking slot
   updateSlotAvailability(int parkingSlotId);
