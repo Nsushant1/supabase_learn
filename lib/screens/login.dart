@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:sign_in_button/sign_in_button.dart';
 import 'package:supabase_carparking_app/constants/config.dart';
-import 'package:supabase_carparking_app/constants/constant.dart'; 
+import 'package:supabase_carparking_app/constants/constant.dart';
+import 'package:supabase_carparking_app/repository/parking_repository.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -61,62 +62,68 @@ class _LoginState extends State<Login> {
             Padding(
               padding: const EdgeInsets.only(top: 8.0),
               child: Form(
-                  key: _loginFormKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text("Email"),
-                      TextFormField(
-                        style: const TextStyle(
-                            fontSize: 14,
-                            color: Color.fromARGB(255, 85, 84, 84)),
-                        controller: emailController,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter email address';
+                key: _loginFormKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text("Email"),
+                    TextFormField(
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: Color.fromARGB(255, 85, 84, 84),
+                      ),
+                      controller: emailController,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter email address';
+                        }
+                        return null;
+                      },
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.only(top: 8.0),
+                      child: Text("Password"),
+                    ),
+                    TextFormField(
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: Color.fromARGB(255, 85, 84, 84),
+                      ),
+                      controller: passController,
+                      obscureText: true,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter password';
+                        }
+                        return null;
+                      },
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10.0),
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          if (_loginFormKey.currentState!.validate()) {
+                            await ParkingRepository().signInUser(
+                              emailController.text,
+                              context,
+                            );
                           }
-                          return null;
                         },
-                      ),
-                      const Padding(
-                        padding: EdgeInsets.only(top: 8.0),
-                        child: Text("Password"),
-                      ),
-                      TextFormField(
-                        style: const TextStyle(
-                            fontSize: 14,
-                            color: Color.fromARGB(255, 85, 84, 84)),
-                        controller: passController,
-                        obscureText: true,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter password';
-                          }
-                          return null;
-                        },
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 10.0),
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.pushNamed(context, "/home");
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: brandColor,
-                            foregroundColor: Colors.black,
-                            fixedSize: const Size(500, 34),
-                          ),
-                          child: const Text("Sign In"),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: brandColor,
+                          foregroundColor: Colors.black,
+                          fixedSize: const Size(500, 34),
                         ),
+                        child: const Text("Sign In"),
                       ),
-                    ],
-                  )),
+                    ),
+                  ],
+                ),
+              ),
             ),
             const Padding(
               padding: EdgeInsets.only(top: 10.0, bottom: 20.0),
-              child: Text(
-                "or",
-              ),
+              child: Text("or"),
             ),
             SizedBox(
               width: 500,
@@ -145,14 +152,13 @@ class _LoginState extends State<Login> {
             Padding(
               padding: const EdgeInsets.only(bottom: 10.0),
               child: TextButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, "/signup");
-                  },
-                  style: TextButton.styleFrom(
-                    foregroundColor: Colors.black,
-                  ),
-                  child: const Text("Don't have an account? Sign Up")),
-            )
+                onPressed: () {
+                  Navigator.pushNamed(context, "/signup");
+                },
+                style: TextButton.styleFrom(foregroundColor: Colors.black),
+                child: const Text("Don't have an account? Sign Up"),
+              ),
+            ),
           ],
         ),
       ),

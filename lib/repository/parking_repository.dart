@@ -11,22 +11,19 @@ class ParkingRepository extends Adapter {
     String carColor,
     BuildContext context,
   ) async {
-
-    try{
+    try {
       final data = await supabase.from('vehicle').insert({
-        'user_Id':supabaseProvider.userId,
-        'car_model':carModel,
-        'car_number':carNumber,
-        'car_color':carColor,
-
+        'user_Id': supabaseProvider.userId,
+        'car_model': carModel,
+        'car_number': carNumber,
+        'car_color': carColor,
       }).select();
 
-      if(data.isNotEmpty){
-        if(context.mounted){
+      if (data.isNotEmpty) {
+        if (context.mounted) {
           Navigator.pushNamed(context, "/");
         }
       }
-
     } on PostgrestException catch (e) {
       if (context.mounted) {
         switch (e.code) {
@@ -54,7 +51,6 @@ class ParkingRepository extends Adapter {
         ).showSnackBar(SnackBar(content: Text("An unexpected error : $e")));
       }
     }
- 
   }
 
   @override
@@ -145,9 +141,36 @@ class ParkingRepository extends Adapter {
   }
 
   @override
-  Future<dynamic> getParkingareas(BuildContext context) {
-    // TODO: implement getParkingareas
-    throw UnimplementedError();
+  Future<dynamic> getParkingareas(BuildContext context) async {
+    try {
+     return await supabase.schema('parking').from('parking_area').select('*');
+    } on PostgrestException catch (e) {
+      if (context.mounted) {
+        switch (e.code) {
+          case '23505':
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(const SnackBar(content: Text('This already exist')));
+            break;
+          case '42501':
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text("Unauthorized: You dont have access"),
+              ),
+            );
+          default:
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text("Unknown Error: ${e.message}")),
+            );
+        }
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("An unexpected error : $e")));
+      }
+    }
   }
 
   @override
@@ -224,9 +247,53 @@ class ParkingRepository extends Adapter {
   }
 
   @override
-  Future<dynamic> signInUser(String email, BuildContext context) {
-    // TODO: implement signInUser
-    throw UnimplementedError();
+  Future<dynamic> signInUser(String email, BuildContext context) async {
+    try {
+      final data = await supabase
+          .from('profile')
+          .select('*')
+          .eq('email', email);
+      if (context.mounted) {
+        if (data.isEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Email address deosnt exists ")),
+          );
+        } else if (data.length == 1) {
+          supabaseProvider.setUserId(data[0]['id']);
+          Navigator.pushNamed(context, "/home");
+        } else {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text('Failed !!!')));
+        }
+      }
+    } on PostgrestException catch (e) {
+      if (context.mounted) {
+        switch (e.code) {
+          case '23505':
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(const SnackBar(content: Text('This already exist')));
+            break;
+          case '42501':
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text("Unauthorized: You dont have access"),
+              ),
+            );
+          default:
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text("Unknown Error: ${e.message}")),
+            );
+        }
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("An unexpected error : $e")));
+      }
+    }
   }
 
   @override
@@ -246,7 +313,7 @@ class ParkingRepository extends Adapter {
   ) async {
     try {
       final data = await supabase
-          .from('profile ')
+          .from('profile')
           .update({'name': name, 'phone_no': phoneNumber})
           .eq('id', supabaseProvider.userId)
           .select();
