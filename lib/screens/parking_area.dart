@@ -1,6 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:supabase_carparking_app/arguments.dart';
 import '../constants/config.dart';
 import '../constants/constant.dart';
 
@@ -9,11 +10,14 @@ class ParkingArea extends StatefulWidget {
 
   @override
   State<ParkingArea> createState() => _ParkingAreaState();
+
+  static const routeName="/area";
 }
 
 class _ParkingAreaState extends State<ParkingArea> {
   @override
   Widget build(BuildContext context) {
+    final args=ModalRoute.of(context)!.settings.arguments as ParkingArguments;
     return Scaffold(
       appBar: AppBar(
         actions: [
@@ -34,26 +38,26 @@ class _ParkingAreaState extends State<ParkingArea> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                "Downtown Plaza",
+              Text(
+                args.parkingarea['name'],
                 style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
               ),
-              const Align(
+              Align(
                 alignment: Alignment.centerRight,
                 child: Text(
-                  "\$20/hr",
-                  style: TextStyle(
+                 "\$${args.parkingarea['parking_fee']}/hr",
+                  style: const TextStyle(
                     fontSize: 16,
                     color: brandColor,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
               ),
-              const Row(
+              Row(
                 children: [
                   Icon(Icons.map),
                   Text(
-                    "123 Main St, New York, NY 10001",
+                    args.parkingarea['location_text'],
                     style: TextStyle(fontSize: 13),
                   )
                 ],
@@ -92,8 +96,8 @@ class _ParkingAreaState extends State<ParkingArea> {
                       itemSize: 20,
                       onRatingUpdate: (rating) {},
                     ),
-                    const Text(
-                      "4.0",
+                     Text(
+                      args.parkingarea['rating'].toString(),
                       style: TextStyle(
                           fontWeight: FontWeight.bold, color: secondaryColor),
                     )

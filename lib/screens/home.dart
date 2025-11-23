@@ -1,6 +1,8 @@
 import 'package:empty_widget/empty_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:supabase_carparking_app/arguments.dart';
 import 'package:supabase_carparking_app/repository/parking_repository.dart';
+import 'package:supabase_carparking_app/screens/parking_area.dart';
 
 import '../constants/config.dart';
 import '../constants/constant.dart';
@@ -113,19 +115,19 @@ class _HomeState extends State<Home> {
                       )
                     : ListView.builder(
                         shrinkWrap: true,
-                        itemCount: 5,
+                        itemCount: parkingareas.length,
                         itemBuilder: (context, index) {
                           return ListTile(
-                            title: const Text(
-                              "Downtown Plaza",
+                            title: Text(
+                              parkingareas[index]['name'],
                               style: TextStyle(
                                 color: secondaryColor,
                                 fontSize: 13,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            subtitle: const Text(
-                              "123 Main St, New York, NY 10001",
+                            subtitle: Text(
+                              parkingareas[index]['location'],
                               style: TextStyle(fontSize: 12),
                             ),
                             trailing: const Icon(
@@ -133,7 +135,13 @@ class _HomeState extends State<Home> {
                               color: secondaryColor,
                             ),
                             onTap: () {
-                              Navigator.pushNamed(context, "/area");
+                              Navigator.pushNamed(
+                                context,
+                                ParkingArea.routeName,
+                                arguments: ParkingArguments(
+                                  parkingarea: parkingareas[index],
+                                ),
+                              );
                             },
                           );
                         },

@@ -19,10 +19,14 @@ import 'screens/login.dart';
 import 'screens/parking_area.dart';
 import 'screens/parking_lot.dart';
 
-SupabaseProvider supabaseProvider=SupabaseProvider();
+SupabaseProvider supabaseProvider = SupabaseProvider();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Supabase.initialize(url: supabaseUrl,anonKey: supabaseAnonKey);
+  await Supabase.initialize(
+    url: supabaseUrl,
+    anonKey: supabaseAnonKey,
+    postgrestOptions: const PostgrestClientOptions(schema: 'parking'),
+  );
   runApp(const MainApp());
 }
 
@@ -58,7 +62,7 @@ class MainApp extends StatelessWidget {
         "/signup": (context) => const Signup(),
         "/emailVerification": (context) => const EmailVerification(),
         "/profilesignup": (context) => const ProfileSignUp(),
-        "/area": (context) => const ParkingArea(),
+        ParkingArea.routeName: (context) => const ParkingArea(),
         "/home": (context) => const Home(),
         "/details": (context) => const ParkingDetails(),
         "/lot": (context) => const ParkingLot(),
